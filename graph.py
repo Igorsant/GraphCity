@@ -1,86 +1,80 @@
-import queue
+import random
+import copy
+from node import Node 
 
-class Node:
+class Graph:
     
-    id = -1
-    pai = None
+    matrix = []
+    cleanMatrix = []
+    obstacleWeight = 0.2
     
-    def __init__(self,id):
-        self.id = id
-
-class Grafo:
+    start = None
+    end = None
     
-    matriz = []
-    n = 0
-    direcionado = False
+    def generateGraph(self, obstacles):
+        self.start = None
+        self.end = None
+        self.matrix = []
+        self.cleanMatrix = []
+        for x in range(20):
+            self.matrix.append([])
+            self.cleanMatrix.append([])
+            for y in range(20):
+                value = '0'
+                if (obstacles):
+                    value = random.choices(population=['0', 'X'], weights=[0.8, 0.2], k=1)[0]
+                
+                self.matrix[x].append(Node(value, x, y))
+                self.cleanMatrix[x].append(Node(value, x, y))
+                
+                if (value != 'X'):
+                    self.end = self.matrix[x][y]
+                    if (self.start == None):
+                        self.start = self.matrix[x][y]
+        
+        # Fallback se uma matrix tiver apenas X ou um único nó disponível (quase impossível)
+        if (self.start == None or self.end == None or self.start == self.end):
+            self.generateGraph(obstacles)
+        else:
+            self.placeStartEnd()
     
-    def __init__(self,n,direcionado): 
-        self.n = n
-        self.direcionado = direcionado
-        for i in range(n):
-            self.matriz.append([0]*n)            
+    def buildGraph(self):
+        graph = ''
+        for y in range(20):
+            for x in range(20):
+                graph = graph + str(self.matrix[x][y].value) + ' '
+            graph = graph + '\n'
+        return graph
+        
     
-    def addAresta(self,s,t):
-        if(not self.direcionado):
-            self.matriz[t][s]=1
-        self.matriz[s][t]=1
-        
-    def printMatriz(self):
-        print()
-        print('##########')
-        for i in range(self.n):
-            for j in range(self.n):
-                print(self.matriz[i][j],end = ' ')
-            print()
-        print('##########')
-        print()
+    def printGraph(self):
+        print(self.buildGraph())
     
-    def bl(self,s,t):
-        q = queue.Queue()
+    def resetMatrix(self):
+        self.matrix = copy.deepcopy(self.cleanMatrix)
+        self.start = self.matrix[self.start.x][self.start.y]
+        self.end = self.matrix[self.end.x][self.end.y]
+        self.placeStartEnd()
         
-        node = Node(s)
-        node.pai = Node(-1)       
+    def placeStartEnd(self):
+        self.start.value = 'S'
+        self.start.profundidade = 0
+        self.end.value = 'E'
+    
+    def changeStartingNode(self, nodeCoordinates):
+        x = nodeCoordinates[0]
+        y = nodeCoordinates[1]
+        self.start = self.matrix[x][y]
+        self.resetMatrix()
+        self.placeStartEnd()
+    
+    def changeEndingNode(self, nodeCoordinates):
+        x = nodeCoordinates[0]
+        y = nodeCoordinates[1]
+        self.end = self.matrix[x][y]
+        self.resetMatrix()
+        self.placeStartEnd()
+    
+
         
-        q.put(node)
         
-        while(not q.empty()):
-            aux = q.get()
-            
-            # Teste de Objetivo           
-            if(aux.id == t):
-                return aux
-            # Teste de Objetivo
-            
-            # Expansão de vizinhos            
-            for i in range(self.n):                
-                if(self.matriz[aux.id][i] == 1 and i != aux.pai.id):
-                    node = Node(i)
-                    node.pai = aux
-                    q.put(node)
-            # Expansão de vizinhos
-        
-        return aux
-        
-
-g = Grafo(10,False)
-
-g.printMatriz()
-
-g.addAresta(0, 2)
-g.addAresta(1, 3)
-g.addAresta(2, 3)
-g.addAresta(3, 5)
-g.addAresta(5, 4)
-g.addAresta(3, 6)
-g.addAresta(6, 9)
-g.addAresta(4, 7)
-g.addAresta(4, 8)
-g.addAresta(8, 9)
-
-g.printMatriz()
-
-objetivo = g.bl(0, 9)
-   
-while(objetivo.id != -1):
-    print(objetivo.id)
-    objetivo = objetivo.pai
