@@ -4,16 +4,17 @@ import os
 class Busca:
     targetFound = False
     arestasPercorridas = 0
-    
+
     def __init__(self, graph):
         self.graph = graph
         self.graph.resetMatrix()
-                                                                                                                      
+
+
+
     def checkNode(self, node, previousNode, delay = 0.005):
         if (node.value == '0'):
             node.value = '1'
-            node.pai = previousNode
-            node.profundidade = previousNode.profundidade + 1
+            self.checkShortcut(node, previousNode)
             time.sleep(delay)
 
             self.arestasPercorridas = self.arestasPercorridas + 1
@@ -24,22 +25,25 @@ class Busca:
             self.targetFound = True
             self.arestasPercorridas = self.arestasPercorridas + 1
             return True
-        elif (node.value == '1'):
-            if (node.profundidade > previousNode.profundidade + 1):
-                node.pai = previousNode
-                node.profundidade = previousNode.profundidade + 1
-            return False
         elif (node.value == 'X'):
             return False
-    
+
+    def checkShortcut(self, node, previousNode):
+        if (node.value != 'X' and (node.profundidade == None or node.profundidade > previousNode.profundidade + 1)):
+            node.pai = previousNode
+            node.profundidade = previousNode.profundidade + 1
+        elif (node.value != 'X' and (previousNode.profundidade > previousNode.profundidade + 1 and node.pai != previousNode)):
+            previousNode.pai = node
+            previousNode.profundidade = node.profundidade + 1
+
     def traceBestPath(self):
         currentNode = self.graph.end
-        
+
         while (currentNode.pai != None and currentNode.pai != self.graph.start):
             currentNode = currentNode.pai
             currentNode.value = '2'
 
-        
+
     def showResult(self):
         self.traceBestPath()
         if (self.targetFound):
@@ -49,21 +53,18 @@ class Busca:
 
         print("\nArestas percorridas: " + str(self.arestasPercorridas))
 
-        print("\nProfundidade do caminho escolhido: " + str(self.graph.end.profundidade))
-        
-    
+        if (self.targetFound):
+            print("\nProfundidade do caminho escolhido: " + str(self.graph.end.profundidade))
+
     def buscaEmLargura(self):
-        
+
         self.targetFound = False
         self.arestasPercorridas = 0
-        
+
         delay = 0.005
-        
+
         nextNodes = [self.graph.start]
-        
-        if (self.graph.start == self.graph.end):
-            self.targetFound = True
-        
+
         while (len(nextNodes) > 0 and not self.targetFound):
             currentNode = nextNodes[0]
             # Left Node
@@ -71,67 +72,74 @@ class Busca:
                 leftNode = self.graph.matrix[currentNode.x - 1][currentNode.y];
                 if (self.checkNode(leftNode, currentNode, delay)):
                     nextNodes.append(leftNode)
-        
+
             # Right Node
             if (currentNode.x < 19 and not self.targetFound):
                 rightNode = self.graph.matrix[currentNode.x + 1][currentNode.y];
                 if (self.checkNode(rightNode, currentNode, delay)):
                     nextNodes.append(rightNode)
-        
+
             # Up Node
             if (currentNode.y > 0 and not self.targetFound):
                 upNode = self.graph.matrix[currentNode.x][currentNode.y - 1];
                 if (self.checkNode(upNode, currentNode, delay)):
                     nextNodes.append(upNode)
-        
+
             # Down Node
             if (currentNode.y < 19 and not self.targetFound):
                 downNode = self.graph.matrix[currentNode.x][currentNode.y + 1];
                 if (self.checkNode(downNode, currentNode, delay)):
                     nextNodes.append(downNode)
-            
+
             nextNodes.pop(0)
-        
+
         self.showResult()
-    
+
     def buscaEmProfundidade(self, currentNode = None):
         if (currentNode == None):
             self.targetFound = False
             currentNode = self.graph.start
-        
-        self.arestasPercorridas = 0
-        
+            self.arestasPercorridas = 0
+
         delay = 0.001
-        
-        if (self.graph.start == self.graph.end):
-            self.targetFound = True
-        
-        # Left Node
-        if (currentNode.x > 0 and not self.targetFound):
-            leftNode = self.graph.matrix[currentNode.x - 1][currentNode.y];
-            if (self.checkNode(leftNode, currentNode, delay)):
-                 self.buscaEmProfundidade(leftNode)
-    
-        # Right Node
-        if (currentNode.x < 19 and not self.targetFound):
-            rightNode = self.graph.matrix[currentNode.x + 1][currentNode.y];
-            if (self.checkNode(rightNode, currentNode, delay)):
-                self.buscaEmProfundidade(rightNode)
-    
+
+        upNode = None
+        rightNode = None
+        downNode = None
+        leftNode = None
+
+        if (currentNode.y > 0):
+            upNode = self.graph.matrix[currentNode.x][currentNode.y - 1]
+            self.checkShortcut(upNode, currentNode)
+
+        if (currentNode.x < 19):
+            rightNode = self.graph.matrix[currentNode.x + 1][currentNode.y]
+            self.checkShortcut(rightNode, currentNode)
+
+        if (currentNode.y < 19):
+            downNode = self.graph.matrix[currentNode.x][currentNode.y + 1]
+            self.checkShortcut(downNode, currentNode)
+
+        if (currentNode.x > 0):
+            leftNode = self.graph.matrix[currentNode.x - 1][currentNode.y]
+            self.checkShortcut(leftNode, currentNode)
+
         # Up Node
-        if (currentNode.y > 0 and not self.targetFound):
-            upNode = self.graph.matrix[currentNode.x][currentNode.y - 1];
-            if (self.checkNode(upNode, currentNode, delay)):
-                self.buscaEmProfundidade(upNode)
-    
+        if (currentNode.y > 0 and not self.targetFound and self.checkNode(upNode, currentNode, delay)):
+            self.buscaEmProfundidade(upNode)
+
+        # Right Node
+        if (currentNode.x < 19 and not self.targetFound and self.checkNode(rightNode, currentNode, delay)):
+            self.buscaEmProfundidade(rightNode)
+
         # Down Node
-        if (currentNode.y < 19 and not self.targetFound):
-            downNode = self.graph.matrix[currentNode.x][currentNode.y + 1];
-            if (self.checkNode(downNode, currentNode, delay)):
-                self.buscaEmProfundidade(downNode)
-        
+        if (currentNode.y < 19 and not self.targetFound and self.checkNode(downNode, currentNode, delay)):
+            self.buscaEmProfundidade(downNode)
+
+        # Left Node
+        if (currentNode.x > 0 and not self.targetFound and self.checkNode(leftNode, currentNode, delay)):
+            self.buscaEmProfundidade(leftNode)
+
         # Apenas mostra as mensagens de finalização na função inicial da recursão
         if (currentNode == self.graph.start):
             self.showResult()
-    
-    #def 
