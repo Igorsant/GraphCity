@@ -1,5 +1,6 @@
 from graph import Graph
 from busca import Busca
+from graphics import Graphics
 
 class Main:
     graph = {}
@@ -25,6 +26,9 @@ class Main:
         
         self.graph.generateGraph(choiceBoolean)
         
+        graphics = Graphics(self.graph)
+        graphics.start()
+
         self.menu()
                 
     def printGraphAndSubtitles(self):
@@ -34,7 +38,6 @@ class Main:
         print(subtitlesText)
     
     def menu(self):
-        self.printGraphAndSubtitles()
         choice = {}
         validChoices = ['1', '2', '3', '4', '5', '6']
         
@@ -111,7 +114,6 @@ class Main:
                 elif (choice == '1'):
                     buscas.buscaEmLargura()
                 elif (choice == '2'):
-                    self.graph.printGraph()
                     buscas.buscaEmProfundidade()
                 elif (choice == '3'):
                     print('\nTODO\n')
@@ -123,11 +125,12 @@ class Main:
                     self.printGraphAndSubtitles()
                     restart = 'n'
             
-            self.graph.resetMatrix()
+            
             
             validChoices = ['s', 'n']
             while (restart.lower() not in validChoices):
                 restart = input("\nGostaria de fazer outra busca com esse grafo? (S/N)\n")
+                self.graph.resetMatrix()
                 if (restart not in validChoices):
                     print('\nSeleção inválida!')
                 else:

@@ -15,10 +15,7 @@ class Busca:
             node.pai = previousNode
             node.profundidade = previousNode.profundidade + 1
             time.sleep(delay)
-            
-            # Pula linhas até as anteriores estarem fora de vista e reprinta o grafo, dando ilusão de animação (Só funciona no cmd, não no Jupyter Lab)
-            os.system('cls' if os.name == 'nt' else "printf '\033c'")
-            self.graph.printGraph()
+
             self.arestasPercorridas = self.arestasPercorridas + 1
             return True
         elif (node.value == 'E'):
@@ -41,10 +38,7 @@ class Busca:
         while (currentNode.pai != None and currentNode.pai != self.graph.start):
             currentNode = currentNode.pai
             currentNode.value = '2'
-        
-        # Pula linhas até as anteriores estarem fora de vista e reprinta o grafo, dando ilusão de animação (Só funciona no cmd, não no Jupyter Lab)
-        os.system('cls' if os.name == 'nt' else "printf '\033c'")
-        self.graph.printGraph()
+
         
     def showResult(self):
         self.traceBestPath()
@@ -60,7 +54,6 @@ class Busca:
     
     def buscaEmLargura(self):
         
-        self.graph.printGraph()
         self.targetFound = False
         self.arestasPercorridas = 0
         
@@ -140,3 +133,5 @@ class Busca:
         # Apenas mostra as mensagens de finalização na função inicial da recursão
         if (currentNode == self.graph.start):
             self.showResult()
+    
+    #def 

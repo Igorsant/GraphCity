@@ -3,19 +3,13 @@ import copy
 from node import Node 
 
 class Graph:
-    
-    matrix = []
-    cleanMatrix = []
     obstacleWeight = 0.2
-    
-    start = None
-    end = None
     
     def generateGraph(self, obstacles):
         self.start = None
         self.end = None
-        self.matrix = []
-        self.cleanMatrix = []
+        self.matrix = [[Node]]
+        self.cleanMatrix = [[Node]]
         for x in range(20):
             self.matrix.append([])
             self.cleanMatrix.append([])
