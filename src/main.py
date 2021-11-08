@@ -125,7 +125,7 @@ class Main:
                 elif (choice == '3'):
                     print('\nTODO\n')
                 elif (choice == '4'):
-                    print('\nTODO\n')
+                    buscas.busca_gulosa()
                 elif (choice == '5'):
                     print('\nTODO\n')
                 elif (choice == '6'):

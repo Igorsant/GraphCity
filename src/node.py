@@ -6,6 +6,7 @@ class Node:
     value = 0
     x = 0
     y = 0
+    sortValue = 0
 
     def __init__(self, value, x, y):
         self.value = value
