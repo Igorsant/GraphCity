@@ -47,7 +47,7 @@ class Main:
         validChoices = ['1', '2', '3', '4', '5', '6']
 
         while (choice != '6'):
-            self.printGraphAndSubtitles()
+            self.printSubtitles()
             choice = input('\nO que deseja fazer agora?\n\n1) Efetuar busca\n2) Modificar ponto de partida\n3) Modificar ponto de chegada\n4) Gerar novo grafo com obstáculos\n5) Gerar novo grafo sem obstáculos\n6) Encerrar\n\n')
 
             if (choice not in validChoices):

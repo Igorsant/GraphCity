@@ -36,7 +36,7 @@ class Graph:
         graph = ''
         for y in range(20):
             for x in range(20):
-                graph = graph + str(self.matrix[x][y].value) + ' (' + str(self.matrix[x][y].x) + ' ' + str(self.matrix[x][y].y) + ') '
+                graph = graph + str(self.matrix[x][y].value) + ' '
             graph = graph + '\n'
         return graph
 
