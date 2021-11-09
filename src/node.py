@@ -7,6 +7,7 @@ class Node:
     x = 0
     y = 0
     sortValue = 0
+    dist_from_father = 1
 
     def __init__(self, value, x, y):
         self.value = value

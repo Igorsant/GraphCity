@@ -127,7 +127,7 @@ class Main:
                 elif (choice == '4'):
                     buscas.busca_gulosa()
                 elif (choice == '5'):
-                    print('\nTODO\n')
+                    buscas.a_star()
                 elif (choice == '6'):
                     self.printSubtitles()
                     restart = 'n'

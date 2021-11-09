@@ -2,6 +2,7 @@ import time
 import os
 import math
 from graph import Graph
+from node import Node
 
 class Busca:
     targetFound = False
@@ -190,6 +191,59 @@ class Busca:
                     nextNodes.append(downNode)
 
             nextNodes.sort(key= lambda x: x.sortValue)
+
+        self.showResult()
+
+    def a_star(self):
+        self.targetFound = False
+        self.arestasPercorridas = 0
+
+        delay = 0.005
+
+        nextNodes = [self.graph.start]
+
+        if (self.graph.start == self.graph.end):
+            self.targetFound = True
+
+        nextNodes[0].dist_from_father = 0
+        while (len(nextNodes) > 0 and not self.targetFound):
+            if len(nextNodes) == 0:
+                print('busca impossível')
+                break
+            currentNode = nextNodes.pop(0)
+            # Left Node
+            if (currentNode.x > 0 and not self.targetFound):
+                leftNode = self.graph.matrix[currentNode.x - 1][currentNode.y];
+                leftNode.sortValue = self.distance(leftNode.x, leftNode.y, self.graph.end.x, self.graph.end.y)
+                leftNode.dist_from_father = currentNode.dist_from_father+1
+                if (self.checkNode(leftNode, currentNode, delay)):
+                    nextNodes.append(leftNode)
+
+            # Right Node
+            if (currentNode.x < 19 and not self.targetFound):
+                rightNode = self.graph.matrix[currentNode.x + 1][currentNode.y];
+                rightNode.sortValue = self.distance(rightNode.x, rightNode.y, self.graph.end.x, self.graph.end.y)
+                rightNode.dist_from_father = currentNode.dist_from_father+1
+                if (self.checkNode(rightNode, currentNode, delay)):
+                    nextNodes.append(rightNode)
+
+            # Up Node
+            if (currentNode.y > 0 and not self.targetFound):
+                upNode = self.graph.matrix[currentNode.x][currentNode.y - 1];
+                upNode.sortValue = self.distance(upNode.x, upNode.y, self.graph.end.x, self.graph.end.y)
+                upNode.dist_from_father = currentNode.dist_from_father+1
+                if (self.checkNode(upNode, currentNode, delay)):
+                    nextNodes.append(upNode)
+
+            # Down Node
+            if (currentNode.y < 19 and not self.targetFound):
+                downNode = self.graph.matrix[currentNode.x][currentNode.y + 1];
+                downNode.sortValue = self.distance(downNode.x, downNode.y, self.graph.end.x, self.graph.end.y)
+                downNode.dist_from_father = currentNode.dist_from_father+1
+                if (self.checkNode(downNode, currentNode, delay)):
+                    nextNodes.append(downNode)
+
+            nextNodes.sort(key= lambda x: x.sortValue+x.dist_from_father)
 
         self.showResult()
 
