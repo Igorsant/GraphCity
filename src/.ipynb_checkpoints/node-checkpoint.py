@@ -18,4 +18,5 @@ class Node:
         self.value = value
         self.x = x
         self.y = y
-        self.costValue = random.randrange(1,99)
+
+        self.costValue = rand
